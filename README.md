@@ -1,4 +1,4 @@
-fixture-book
-============
+FixtureBook
+===========
 
-単体テストで使うデータを .xlsx ファイルに記述して簡単に利用できるようにするための仕組みです。 
+A class library for unit testing with fixtures described by .xlsx file.

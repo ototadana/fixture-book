@@ -4,3 +4,12 @@
 *.jar
 *.war
 *.ear
+
+/.classpath
+/.project
+/.settings
+/log
+*.log
+/target
+Thumbs.db
+~$*

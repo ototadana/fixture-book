@@ -1,0 +1,40 @@
+﻿CREATE TABLE [TypesTable] (
+    [Id]                INT                NOT NULL,
+    [bigint1]           BIGINT             NULL,
+    [binary1]           BINARY (4)         NULL,
+    [bit1]              BIT                NULL,
+    [char1]             CHAR (10)          NULL,
+    [date1]             DATE               NULL,
+    [datetime1]         DATETIME           NULL,
+    [datetime2]         DATETIME2 (7)      NULL,
+    [datetimeoffset1]   DATETIMEOFFSET (7) NULL,
+    [decimal]           DECIMAL (15, 3)    NULL,
+    [float1]            FLOAT (53)         NULL,
+    [image1]            IMAGE              NULL,
+    [int1]              INT                NULL,
+    [money1]            MONEY              NULL,
+    [nchar1]            NCHAR (10)         NULL,
+    [ntext1]            NTEXT              NULL,
+    [mumeric1]          NUMERIC (18)       NULL,
+    [nvarchar1]         NVARCHAR (50)      NULL,
+    [real1]             REAL               NULL,
+    [rowversion1]       ROWVERSION         NULL,
+    [smalldatetime1]    SMALLDATETIME      NULL,
+    [smallint1]         SMALLINT           NULL,
+    [smallmoney1]       SMALLMONEY         NULL,
+    [sql_variant1]      SQL_VARIANT        NULL,
+    [text1]             TEXT               NULL,
+    [time1]             TIME (7)           NULL,
+    [tinyint1]          TINYINT            NULL,
+    [uniqueidentifier1] UNIQUEIDENTIFIER   NULL,
+    [varbinary1]        VARBINARY (50)     NULL,
+    [varchar1]          VARCHAR (50)       NULL,
+    [xml1]              XML                NULL,
+    PRIMARY KEY CLUSTERED ([Id] ASC)
+);
+
+CREATE TABLE [HasIdentityTable]
+(
+	[Id] INT IDENTITY (1, 1) NOT NULL PRIMARY KEY,
+	[Name] NVARCHAR (MAX) NULL
+);

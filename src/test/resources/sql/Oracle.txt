@@ -1,0 +1,15 @@
+﻿create table TYPES_TABLE(
+	id number(8) primary key,
+	char1 char(10),
+	varchar1 varchar2(50),
+	nchar1 nchar(10),
+	nvarchar1 nvarchar2(50),
+	int1 number(8),
+	decimal1 number(10,3),
+	clob1 clob,
+	blob1 blob,
+	date1 date,
+	timestamp1 timestamp,
+	timestamptz timestamp with time zone,
+	timestampltz timestamp with local time zone
+);
