@@ -7,9 +7,28 @@
   <version>1.0.0</version>
   <packaging>jar</packaging>
 
-  <name>Fixture.Book</name>
+  <name>FixtureBook</name>
+  <description>A class library for unit testing with fixtures described by .xlsx file.</description>
   <url>http://xpfriend.com/</url>
   <inceptionYear>2013</inceptionYear>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>https://github.com/ototadana/fixture-book</url>
+    <connection>scm:git:https://github.com/ototadana/fixture-book.git</connection>
+  </scm>
+  <developers>
+    <developer>
+      <id>ototadana</id>
+      <name>Otota DANA</name>
+      <email>ototadana@gmail.com</email>
+    </developer>
+  </developers>
   <organization>
     <name>XPFriend Community</name>
   </organization>
