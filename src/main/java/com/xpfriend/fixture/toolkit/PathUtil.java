@@ -29,7 +29,7 @@ import com.xpfriend.junk.Strings;
 public class PathUtil {
 
 	private static final String SOURCE_PATH_KEY = "FixtureBook.sourcePath";
-	private static final String DEFAULT_SOURCE_PATH = "./src/test/resources;./src/test/java;./src;.";
+	private static final String DEFAULT_SOURCE_PATH = "./src/test/resources;./src/test/java;./src/test/groovy;./src;.";
 	private static List<String> sourcePath;
 
 	static {
