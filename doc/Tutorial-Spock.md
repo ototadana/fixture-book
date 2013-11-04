@@ -50,7 +50,7 @@ Spock を使って単体テストを行う場合の利用例を説明します�
         }
 
         Sql createSql() {
-            Sql.newInstance("jdbc:oracle:thin:@localhost:1521:xe", "system", "manager")
+            Sql.newInstance("jdbc:oracle:thin:@localhost:1521:xe", "scott", "tiger")
         }
     }
 ```

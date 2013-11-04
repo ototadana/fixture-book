@@ -120,7 +120,7 @@ LAST_UPDATED列に関しては save メソッドにより現在日時が自動�
 1.  save メソッドの引数として渡すデータを `fixtureBook.getList(Employee)` で取得する。
     これにより、`D.パラメタ` の "Employee" で記述した値で初期化された Employee のリスト (List<Employee>) が取得できる。
 2.  上記で取得したリストを引数にして、テスト対象メソッド (save) を呼び出す。
-3.  `fixtureBook.ValidateStorage()` の呼び出しにより、データベーステーブル状態を検証する。
+3.  `fixtureBook.validateStorage()` の呼び出しにより、データベーステーブル状態を検証する。
     これにより、`F.更新後データ`に記述した内容と実際のデータベーステーブルの状態が同じかどうかのチェックが行われる。
 
 ```
@@ -157,10 +157,10 @@ LAST_UPDATED列に関しては save メソッドにより現在日時が自動�
 
 ------------------------
 
-*   [FixtureBook チュートリアル (JUnit編)](./Tutorial-JUnit.md)
+*   [FixtureBook チュートリアル (Spock編)](./Tutorial-Spock.md)
     *   #01 データ登録メソッド save のテスト
-    *   [#02 データ削除メソッド delete のテスト](./Tutorial-JUnit-delete.md)
-    *   [#03 データ取得メソッド getAllEmployees のテスト](./Tutorial-JUnit-getAllEmployees.md)
-    *   [#04 データ検索メソッド getEmployees のテスト](./Tutorial-JUnit-getEmployees.md)
-    *   [#05 例外発生のテスト](./Tutorial-JUnit-Exception.md)
-    *   [#06 テストメソッドの簡略化](./Tutorial-JUnit-expect.md)
+    *   [#02 データ削除メソッド delete のテスト](./Tutorial-Spock-delete.md)
+    *   [#03 データ取得メソッド getAllEmployees のテスト](./Tutorial-Spock-getAllEmployees.md)
+    *   [#04 データ検索メソッド getEmployees のテスト](./Tutorial-Spock-getEmployees.md)
+    *   [#05 例外発生のテスト](./Tutorial-Spock-Exception.md)
+    *   [#06 テストメソッドの簡略化](./Tutorial-Spock-expect.md)

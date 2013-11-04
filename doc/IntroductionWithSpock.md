@@ -78,10 +78,10 @@ FixtureBook の使い方はとてもシンプルです。
 
 単体テストは以下のように記述します。
 
-*   単体テストクラス名は、テスト対象クラス名Test または、テスト対象クラス名Spec とする。
+*   単体テストクラス名は、`[テスト対象クラス名]Test` または、`[テスト対象クラス名]Spec` とする。
 *   `import com.xpfriend.fixture.FixtureBook` を追加する。
 *   `Excelシート名__テストケース記述` という名前でテストメソッドを作成する。
-*   FixtureBook.expectReturn メソッドでテスト対象メソッドを呼び出して、予想結果のチェックを行う。
+*   `FixtureBook.expectReturn` メソッドでテスト対象メソッドを呼び出して、予想結果のチェックを行う。
 
 &nbsp;
 
@@ -133,7 +133,7 @@ FixtureBook の操作は以下のメソッドで行うことができます。
 
 
 
-### 3.2 FixtureBook アノテーションと Fixture アノテーション
+### 3.2 FixtureBookPath アノテーションと Fixture アノテーション
 
 以下のように、クラスまたはメソッドに `@FixtureBookPath` アノテーションを指定すると、
 利用する .xlsx ファイルのパスを明示的に指定できます。

@@ -129,7 +129,7 @@ LAST_UPDATED列に関しては save メソッドにより現在日時が自動�
 1.  save メソッドの引数として渡すデータを `fixtureBook.getList(Employee.class)` で取得する。
     これにより、`D.パラメタ` の "Employee" で記述した値で初期化された Employee のリスト (List<Employee>) が取得できる。
 2.  上記で取得したリストを引数にして、テスト対象メソッド (save) を呼び出す。
-3.  `fixtureBook.ValidateStorage()` の呼び出しにより、データベーステーブル状態を検証する。
+3.  `fixtureBook.validateStorage()` の呼び出しにより、データベーステーブル状態を検証する。
     これにより、`F.更新後データ`に記述した内容と実際のデータベーステーブルの状態が同じかどうかのチェックが行われる。
 
 ```
