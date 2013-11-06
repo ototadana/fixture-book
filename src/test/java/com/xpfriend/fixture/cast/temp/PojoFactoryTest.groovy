@@ -187,4 +187,26 @@ class PojoFactoryTest extends Specification {
 		e.getMessage() == "M_Fixture_Temp_ObjectFactory_NoSuchProperty"
 		e.getLocalizedMessage().indexOf("zzz") > -1
 	}
+
+	def "Stringを作成できる"() {
+		when: String object = fixtureBook.getObject(String)
+		then: object == "a"
+
+		when: String[] array = fixtureBook.getArray(String)
+		then: array == ["a", "b"]
+
+		when: List<String> list = fixtureBook.getList(String)
+		then: list == ["a", "b"]
+	}
+
+	def "intを作成できる"() {
+		when: int object = fixtureBook.getObject(int)
+		then: object == 1
+
+		when: int[] array = fixtureBook.getArray(int)
+		then: array == [1, 2]
+
+		when: List<Integer> list = fixtureBook.getList(Integer)
+		then: list == [1, 2]
+	}
 }

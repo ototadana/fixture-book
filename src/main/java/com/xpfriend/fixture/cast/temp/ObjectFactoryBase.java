@@ -159,12 +159,13 @@ public abstract class ObjectFactoryBase extends ObjectOperatorBase implements Ob
 		return list.get(0);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public <T> Object getArray(Class<? extends T> cls, String typeName) {
 		List<T> list = getList(cls, typeName);
 		Object array = Array.newInstance(cls, list.size());
-		list.toArray((T[])array);
+		for(int i = 0; i < list.size(); i++) {
+			Array.set(array, i, list.get(i));
+		}
 		return array;
 	}
 }
