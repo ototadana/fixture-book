@@ -29,6 +29,7 @@ import com.xpfriend.fixture.staff.Case;
 import com.xpfriend.fixture.staff.Section;
 import com.xpfriend.fixture.staff.Section.SectionType;
 import com.xpfriend.fixture.staff.Table;
+import com.xpfriend.fixture.toolkit.MethodFinder;
 import com.xpfriend.junk.ConfigException;
 import com.xpfriend.junk.ExceptionHandler;
 
@@ -339,14 +340,12 @@ public class TempConductor implements Conductor {
 						cls.getName(), getMethodName(targetMethod, parameterClass));
 			}
 		}
-		
-		Method[] method = cls.getDeclaredMethods();
-		for(int i = 0; i < method.length; i++) {
-			if(method[i].getName().equals(targetMethod)) {
-				return method[i];
-			}
-		}
-		throw new ConfigException("M_Fixture_Temp_Conductor_CannotFindMethod", cls.getName(), targetMethod);
+
+		 Method method = MethodFinder.findMethod(cls, targetMethod);
+		 if(method == null) {
+			 throw new ConfigException("M_Fixture_Temp_Conductor_CannotFindMethod", cls.getName(), targetMethod);
+		 }
+		 return method;
 	}
 
 	private Object getMethodName(String targetMethod, Class<?>[] parameterClass) {

@@ -23,6 +23,7 @@ import java.util.concurrent.Callable;
 import com.xpfriend.fixture.staff.Book;
 import com.xpfriend.fixture.staff.Case;
 import com.xpfriend.fixture.staff.Sheet;
+import com.xpfriend.fixture.toolkit.MethodFinder;
 import com.xpfriend.fixture.toolkit.PathUtil;
 import com.xpfriend.fixture.toolkit.StackFrameFinder;
 import com.xpfriend.junk.Config;
@@ -207,13 +208,11 @@ public class FixtureBook {
 	}
 	
 	private Method findMethod(Class<?> type, String methodName) throws NoSuchMethodException {
-		Method[] methods = type.getDeclaredMethods();
-		for(int i = 0; i < methods.length; i++) {
-			if(methods[i].getName().equals(methodName)) {
-				return methods[i];
-			}
+		Method method = MethodFinder.findMethod(type, methodName);
+		if(method == null) {
+			method = type.getDeclaredMethod(methodName);
 		}
-		return type.getDeclaredMethod(methodName);
+		return method;
 	}
 
 	private FixtureInfo createFixtureInfo(StackTraceElement stackFrame,
@@ -404,13 +403,11 @@ public class FixtureBook {
 	
 	private String getDefaultTargetMethod(Class<?> targetClass) {
 		String methodName = sheet.getName();
-		Method[] method = targetClass.getDeclaredMethods();
-		for(int i = 0; i < method.length; i++) {
-			if(method[i].getName().equals(methodName)) {
-				return methodName;
-			}
+		Method method = MethodFinder.findMethod(targetClass, methodName);
+		if(method == null) {
+			throw new ConfigException("M_Fixture_FixtureBook_GetDefaultTargetMethod", methodName, targetClass.getName(), testCase);
 		}
-		throw new ConfigException("M_Fixture_FixtureBook_GetDefaultTargetMethod", methodName, targetClass.getName(), testCase);
+		return methodName;
 	}
 
 	private Class<?> getDefaultTargetClass() {
