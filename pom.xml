@@ -3,7 +3,7 @@
 
   <groupId>com.xpfriend</groupId>
   <artifactId>fixture-book</artifactId>
-  <version>5.2-SNAPSHOT</version>
+  <version>5.2</version>
   <packaging>jar</packaging>
 
   <name>FixtureBook</name>
@@ -21,7 +21,7 @@
     <url>https://github.com/ototadana/fixture-book</url>
     <connection>scm:git:https://github.com/ototadana/fixture-book.git</connection>
     <developerConnection>scm:git:https://github.com/ototadana/fixture-book.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>5.2</tag>
   </scm>
   <developers>
     <developer>
