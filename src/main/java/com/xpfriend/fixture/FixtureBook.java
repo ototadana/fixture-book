@@ -15,6 +15,7 @@
  */
 package com.xpfriend.fixture;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -132,10 +133,20 @@ public class FixtureBook {
 		if(annotation != null) {
 			String path = annotation.value();
 			if(path != null) {
-				return path;
+				String tmp = PathUtil.editFilePath(path);
+				if(new File(tmp).exists()) {
+					return tmp;
+				}
+				
+				if(path.equals(new File(path).getName())) {
+					String defaultFilePath = getDefaultFilePath(stackTraceElement);
+					File defaultDirectory = new File(defaultFilePath).getParentFile();
+					path = new File(defaultDirectory, path).getPath();
+					return PathUtil.editFilePath(path);
+				}
 			}
 		}
-		return getDefaultFilePath(stackTraceElement);
+		return PathUtil.editFilePath(getDefaultFilePath(stackTraceElement));
 	}
 
 	private static String getDefaultFilePath(StackTraceElement stackTraceElement) {
@@ -217,7 +228,7 @@ public class FixtureBook {
 
 	private FixtureInfo createFixtureInfo(StackTraceElement stackFrame,
 			Method method, Class<?> type, String[] name) {
-		String filePath = PathUtil.editFilePath(getFilePath(stackFrame, type, method));
+		String filePath = getFilePath(stackFrame, type, method);
 		return new FixtureInfo(type, filePath, name[0], name[1]);
 	}
 

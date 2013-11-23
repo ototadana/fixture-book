@@ -40,6 +40,20 @@ class FixtureBookPathTest extends Specification {
 		"DEF" == new FixtureBook().getObject(FixtureBookPathTestData).text;
 	}
 	
+	@FixtureBookPath("com/xpfriend/fixture/FixtureBookPathTest_02.xlsx")
+	@Fixture("テストメソッドでFixtureBookのパスを上書きできること")
+	def "ソースフォルダ指定無しでもファイル取得できること"() {
+		expect:
+		"DEF" == new FixtureBook().getObject(FixtureBookPathTestData).text;
+	}
+
+	@FixtureBookPath("FixtureBookPathTest_02.xlsx")
+	@Fixture("テストメソッドでFixtureBookのパスを上書きできること")
+	def "フォルダ指定無しの場合ソースフォルダの同一パッケージ階層からファイル取得できること"() {
+		expect:
+		"DEF" == new FixtureBook().getObject(FixtureBookPathTestData).text;
+	}
+	
 	public static class FixtureBookPathTestData {
 		private String text;
 		public String getText() {return text;}
