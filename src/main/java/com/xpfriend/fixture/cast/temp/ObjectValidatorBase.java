@@ -99,9 +99,18 @@ public abstract class ObjectValidatorBase extends ObjectOperatorBase implements 
 	}
 
 	protected void assertNull(String typeName) {
-		if(getSection().hasTable(typeName)) {
+		if(getSection().hasTable(typeName) && !isNull(getSection().getTable(typeName))) {
 			Assertie.fail("M_Fixture_Temp_ObjectValidator_AssertNull", typeName, getSection().getTable(typeName));
 		}
+	}
+
+	private boolean isNull(Table table) {
+		if(table.getRows().size() != 1) {
+			return false;
+		}
+		Map<String, String> values = table.getRows().get(0).getValues();
+		return values.size() == 1 && values.containsKey(OWN) &&
+				NULL.equals(values.get(OWN));
 	}
 
 	protected void assertEquals(Table table, Collection<?> actualList) {

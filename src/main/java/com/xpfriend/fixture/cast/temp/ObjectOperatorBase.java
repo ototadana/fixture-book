@@ -38,6 +38,8 @@ public class ObjectOperatorBase {
 	
 	protected static final String NULL = "${NULL}";
 	protected static final String EMPTY = "${EMPTY}";
+	protected static final String OWN = "-";
+
 	private static final char[] FILE_PATH_MARK = new char[] {'\\', '.'};
 
 	protected Case testCase;

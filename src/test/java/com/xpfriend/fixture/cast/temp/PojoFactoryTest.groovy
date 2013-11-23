@@ -191,12 +191,16 @@ class PojoFactoryTest extends Specification {
 	def "Stringを作成できる"() {
 		when: String object = fixtureBook.getObject(String)
 		then: object == "a"
-
 		when: String[] array = fixtureBook.getArray(String)
 		then: array == ["a", "b"]
 
 		when: List<String> list = fixtureBook.getList(String)
 		then: list == ["a", "b"]
+		
+		expect:
+		FixtureBook.expect({String s -> assert s == "a"})
+		FixtureBook.expect({List list2 -> assert list2 == ["a", "b"]}, String)
+		FixtureBook.expect({String[] array2 -> assert array2 == ["a", "b"]}, String)
 	}
 
 	def "intを作成できる"() {
@@ -208,5 +212,10 @@ class PojoFactoryTest extends Specification {
 
 		when: List<Integer> list = fixtureBook.getList(Integer)
 		then: list == [1, 2]
+		
+		expect:
+		FixtureBook.expect({int object2 -> assert object2 == 1})
+		FixtureBook.expect({List list2 -> assert list2 == [1, 2]}, int)
+		FixtureBook.expect({int[] array2 -> assert array2 == [1, 2]}, int)
 	}
 }

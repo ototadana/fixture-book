@@ -36,14 +36,14 @@ import spock.lang.Specification
  *
  */
 class PojoValidatorTest extends Specification {
-	
+
 	private FixtureBook fixtureBook = new FixtureBook();
 
 	def "hasRoleはinitializeで指定されたテストケースに取得データセクションがなければfalseを返す"() {
 		setup:
 		Sheet sheet = TempActors.getBook().getSheet("HasRole")
 		PojoValidator validator = getPojoValidator(sheet.getCase("ロールなし"))
-		
+
 		expect:
 		validator?.hasRole(null, null) == false
 	}
@@ -52,24 +52,24 @@ class PojoValidatorTest extends Specification {
 		setup:
 		Sheet sheet = TempActors.getBook().getSheet("HasRole")
 		PojoValidator validator = getPojoValidator(sheet.getCase("ロールあり"))
-		
+
 		expect:
 		validator?.hasRole(null, null) == true
 	}
-	
+
 	def "hasRoleは引数のクラスがMapでもtrueを返す"() {
 		setup:
 		Sheet sheet = TempActors.getBook().getSheet("HasRole")
 		PojoValidator validator = getPojoValidator(sheet.getCase("ロールあり"))
-		
+
 		expect:
 		validator?.hasRole(new HashMap<String, String>(), null) == true
 	}
-	
+
 	def "例外のvalidate実行時に例外が発生しない場合はAssertionErrorが発生する"() {
 		when:
 		new FixtureBook().validate(Exception, {true})
-		
+
 		then:
 		AssertionError e = thrown()
 		println e
@@ -79,5 +79,149 @@ class PojoValidatorTest extends Specification {
 		TempObjectValidator parent = new TempObjectValidator();
 		parent.initialize(testCase);
 		return parent.pojoValidator;
+	}
+
+	@Fixture(["stringを検証できる"])
+	def stringを検証できる_正常() {
+		expect:
+		FixtureBook.expectReturn({"aa"});
+	}
+
+	@Fixture(["stringを検証できる"])
+	def stringを検証できる_エラー() {
+		when:
+		FixtureBook.expectReturn({"bb"})
+
+		then:
+		AssertionError e = thrown()
+		println e
+	}
+
+	@Fixture(["intを検証できる"])
+	def intを検証できる_正常() {
+		expect:
+		FixtureBook.expectReturn({1})
+	}
+
+	@Fixture(["intを検証できる"])
+	def intを検証できる_エラー() {
+		when:
+		FixtureBook.expectReturn({2})
+
+		then:
+		AssertionError e = thrown()
+		println e
+	}
+
+	@Fixture(["nullを検証できる"])
+	def nullを検証できる_正常() {
+		expect:
+		FixtureBook.expectReturn({ String a = null; return a})
+	}
+
+	@Fixture(["nullを検証できる"])
+	def nullを検証できる_エラー() {
+		when:
+		FixtureBook.expectReturn({"a"})
+
+		then:
+		AssertionError e = thrown()
+		println e
+	}
+
+	@Fixture(["stringの配列を検証できる"])
+	def stringの配列を検証できる_正常() {
+		expect:
+		FixtureBook.expectReturn({["aa", "b"] as String[]})
+	}
+
+	@Fixture(["stringの配列を検証できる"])
+	def stringの配列を検証できる_エラー() {
+		when:
+		FixtureBook.expectReturn({"aa"})
+
+		then:
+		AssertionError e = thrown()
+		println e
+	}
+
+	@Fixture(["intの配列を検証できる"])
+	def intの配列を検証できる_正常() {
+		expect:
+		FixtureBook.expectReturn({[1, 2].toArray(new int[2])})
+	}
+
+	@Fixture(["intの配列を検証できる"])
+	def intの配列を検証できる_エラー() {
+		when:
+		FixtureBook.expectReturn({[1, 3].toArray(new int[2])})
+
+		then:
+		AssertionError e = thrown()
+		println e
+	}
+
+	@Fixture(["nullと空文字列の配列を検証できる"])
+	def nullと空文字列の配列を検証できる_正常() {
+		expect:
+		FixtureBook.expectReturn({[null, ""] as String[]})
+	}
+
+	@Fixture(["nullと空文字列の配列を検証できる"])
+	def nullと空文字列の配列を検証できる_エラー() {
+		when:
+		FixtureBook.expectReturn({["", ""] as String[]})
+
+		then:
+		AssertionError e = thrown()
+		println e
+	}
+
+	@Fixture(["stringの配列を検証できる"])
+	def stringのリストを検証できる_正常() {
+		expect:
+		FixtureBook.expectReturn({["aa", "b"]})
+	}
+
+	@Fixture(["stringの配列を検証できる"])
+	def stringのリストを検証できる_エラー() {
+		when:
+		FixtureBook.expectReturn({["aa", "bb"]})
+
+		then:
+		AssertionError e = thrown()
+		println e
+	}
+
+	@Fixture(["intの配列を検証できる"])
+	def intのリストを検証できる_正常() {
+		expect:
+		FixtureBook.expectReturn({[1, 2]})
+	}
+
+	@Fixture(["intの配列を検証できる"])
+	def intのリストを検証できる_エラー() {
+		when:
+		FixtureBook.expectReturn({[1, 3]})
+
+		then:
+		AssertionError e = thrown()
+		println e
+	}
+
+	@Fixture(["nullと空文字列の配列を検証できる"])
+	def nullと空文字列のリストを検証できる_正常() {
+		expect:
+		FixtureBook.expectReturn({[null, ""]})
+	}
+
+	@Fixture(["nullと空文字列の配列を検証できる"])
+	def nullと空文字列のリストを検証できる_エラー() {
+		when:
+		FixtureBook.expectReturn({["", ""]})
+
+		then:
+		AssertionError e = thrown()
+		println e
 	}
 }

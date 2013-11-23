@@ -284,7 +284,7 @@ FixtureBook は以下のような論理構造になっています。
 
 *   Java Beans インスタンス
 *   Map インスタンス
-
+*   String, int 等のオブジェクト
 
 ##### Java Beans インスタンス
 
@@ -325,6 +325,27 @@ FixtureBook は以下のような論理構造になっています。
 
 `D.パラメタ` の列名行での列名を [列名]:[型] の形式 (例えば、`age:int`) で記述することで、
 作成するMap値の型を指定することができます。
+
+
+##### String, int 等のオブジェクト
+
+`D.パラメタ` の列名行に `-` を指定するとデータ行に記述した値でオブジェクトが作成されます。
+
+![String, int 等のオブジェクト](./images/FixtureBookReference-14.png?raw=true)
+
+
+以下のように getObject, getList, getArray が利用できます。
+
+```java
+    // Stringを取得する
+    String obj = fixtureBook.getObject(String.class);
+
+    // Stringのリストを取得する
+    List<String> list = fixtureBook.getList(String.class);
+
+    // Stringの配列を取得する
+    String[] array = fixtureBook.getArray(String.class);
+```
 
 
 
@@ -375,6 +396,7 @@ validate メソッドで検証することができるオブジェクトは以�
 
 *    Java Beans インスタンス
 *    Map インスタンス
+*    String, int 等のオブジェクト
 
 
 ##### Java Beans インスタンス
@@ -394,6 +416,14 @@ Java Beans インスタンスのリスト・配列を指定することもでき
 validate メソッドの引数には単体オブジェクトの他に、
 Map オブジェクトのリスト・配列を指定することもできます。
 
+
+##### String, int 等のオブジェクト
+
+`E.取得データ` の列名行に `-` を指定すると、データ行に記述した予想結果値と比較検証することができます。
+
+![String, int 等のオブジェクト](./images/FixtureBookReference-15.png?raw=true)
+
+validate メソッドの引数には単体オブジェクトの他に、リスト・配列を指定することもできます。
 
 
 #### テーブル定義検索ルール

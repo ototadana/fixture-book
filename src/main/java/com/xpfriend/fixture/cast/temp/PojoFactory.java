@@ -30,8 +30,6 @@ import com.xpfriend.junk.ExceptionHandler;
  */
 public class PojoFactory extends ObjectFactoryBase {
 	
-	private static final String OWN = "-";
-
 	public PojoFactory(ObjectFactory parent) {
 		super(parent);
 	}

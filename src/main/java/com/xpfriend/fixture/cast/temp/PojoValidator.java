@@ -15,6 +15,7 @@
  */
 package com.xpfriend.fixture.cast.temp;
 
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import com.xpfriend.fixture.role.ObjectValidator;
@@ -64,6 +65,15 @@ public class PojoValidator extends ObjectValidatorBase {
 
 	@Override
 	protected Object getPropertyValue(Object object, String name, Table table, Row row) {
+		if(isSimpleType(object, row)) {
+			return object;
+		}
 		return PojoUtil.getPropertyValue(object, name, table, row);
+	}
+
+	private boolean isSimpleType(Object value, Row row) {
+		Map<String, String> values = row.getValues();
+		return values.size() == 1 && values.containsKey(OWN) &&
+				(value == null || TypeConverter.isConvertible(value.getClass()));
 	}
 }
