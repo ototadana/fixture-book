@@ -70,6 +70,7 @@ public class XlsxAuthor extends Author {
 		private Section section;
 		private Table table;
 		private List<Column> columns;
+		private int tableRowIndex;
 		private int columnNameRowIndex;
 		private int columnValueRowIndex;
 		private Map<String, String> values;
@@ -95,7 +96,7 @@ public class XlsxAuthor extends Author {
 				} else if(isFlag(value) && columns != null) {
 					updateTable(rowIndex, columnIndex, value);
 				} else {
-					changeTable(value);
+					changeTable(value, rowIndex);
 				}
 				return;
 			}
@@ -109,6 +110,10 @@ public class XlsxAuthor extends Author {
 
 		private void updateTable(int rowIndex, int columnIndex, String value) {
 			if(table == null) {
+				return;
+			}
+			
+			if(rowIndex == tableRowIndex) {
 				return;
 			}
 			
@@ -203,25 +208,26 @@ public class XlsxAuthor extends Author {
 			this.sheet = sheet;
 			this.section = null;
 			changeCase(Case.ANONYMOUS);
-			changeTable((Table)null);
+			changeTable((Table)null, -1);
 		}
 
 		private void changeCase(String value) {
 			this.testCase = Author.createCase(this.sheet, value);
-			changeTable((Table)null);
+			changeTable((Table)null, -1);
 		}
 
 		private void changeSection(String value) {
 			this.section = Author.createSection(this.testCase, value);
-			changeTable((Table)null);
+			changeTable((Table)null, -1);
 		}
 		
-		private void changeTable(String value) {
-			changeTable(Author.createTable(this.section, value));
+		private void changeTable(String value, int rowIndex) {
+			changeTable(Author.createTable(this.section, value), rowIndex);
 		}
 		
-		private void changeTable(Table table) {
+		private void changeTable(Table table, int rowIndex) {
 			this.table = table;
+			this.tableRowIndex = rowIndex;
 			this.columns = null;
 			this.columnNameRowIndex = -1;
 			this.columnValueRowIndex = -1;

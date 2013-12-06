@@ -186,4 +186,20 @@ class DatabaseUpdaterTest extends Specification {
 		then:
 		fixtureBook.validateStorage()
 	}
+	
+	def "テーブル名行に記載されている列名は無視される"() {
+		setup:
+		Loggi.debugEnabled = true
+		テーブル名行に記載されている列名は無視される_Setup()
+		
+		when:
+		fixtureBook.setup()
+		
+		then:
+		fixtureBook.validateStorage()
+	}
+	
+	def "テーブル名行に記載されている列名は無視される_Setup"() {
+		new FixtureBook().setup()
+	}
 }
