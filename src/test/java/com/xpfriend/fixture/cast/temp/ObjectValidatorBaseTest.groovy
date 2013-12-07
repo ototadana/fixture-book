@@ -15,6 +15,8 @@
  */
 package com.xpfriend.fixture.cast.temp
 
+import java.text.DateFormat;
+
 import com.xpfriend.fixture.Fixture;
 import com.xpfriend.fixture.FixtureBook;
 import com.xpfriend.fixture.cast.temp.data.ArrayData;
@@ -22,6 +24,7 @@ import com.xpfriend.fixture.cast.temp.data.Data;
 import com.xpfriend.fixture.cast.temp.data.Order;
 import com.xpfriend.fixture.cast.temp.data.OrderDetails
 import com.xpfriend.junk.ConfigException;
+import com.xpfriend.junk.Formi;
 
 import spock.lang.Specification;
 
@@ -465,5 +468,75 @@ class ObjectValidatorBaseTest extends Specification{
 		println e
 		e.getLocalizedMessage().indexOf("Y2Jh") > -1
 		e.getLocalizedMessage().indexOf("YwBh") > -1
+	}
+	
+	@Fixture("セル内容が\${TODAY}の場合は本日の日付のみOK")
+	def "セル内容がTODAYの場合は本日の日付のみOK_ロケール日付書式文字列"() {
+		setup:
+		def data = [date1: DateFormat.getDateInstance().format(new Date())];
+		System.out.println(data.date1);
+		
+		expect:
+		fixtureBook.validate(data)
+	}
+
+	@Fixture("セル内容が\${TODAY}の場合は本日の日付のみOK")
+	def "セル内容がTODAYの場合は本日の日付のみOK_ロケール日時書式文字列"() {
+		setup:
+		def data = [date1: DateFormat.getDateTimeInstance().format(new Date())];
+		System.out.println(data.date1);
+		
+		expect:
+		fixtureBook.validate(data)
+	}
+	
+	@Fixture("セル内容が\${TODAY}の場合は本日の日付のみOK")
+	def "セル内容がTODAYの場合は本日の日付のみOK_ハイフン区切り日付書式文字列"() {
+		setup:
+		def data = [date1: Formi.format(new Date(), "yyyy-MM-dd")];
+		System.out.println(data.date1);
+		
+		expect:
+		fixtureBook.validate(data)
+	}
+	
+	@Fixture("セル内容が\${TODAY}の場合は本日の日付のみOK")
+	def "セル内容がTODAYの場合は本日の日付のみOK_ハイフン区切り日時書式文字列"() {
+		setup:
+		def data = [date1: Formi.format(new Date(), "yyyy-MM-dd HH:mm:ss")];
+		System.out.println(data.date1);
+		
+		expect:
+		fixtureBook.validate(data)
+	}
+
+	@Fixture("セル内容が\${TODAY}の場合は本日の日付のみOK")
+	def "セル内容がTODAYの場合は本日の日付のみOK_区切り文字なし日付書式文字列"() {
+		setup:
+		def data = [date1: Formi.format(new Date(), "yyyyMMdd")];
+		System.out.println(data.date1);
+		
+		expect:
+		fixtureBook.validate(data)
+	}
+	
+	@Fixture("セル内容が\${TODAY}の場合は本日の日付のみOK")
+	def "セル内容がTODAYの場合は本日の日付のみOK_区切り文字なし日時分書式文字列"() {
+		setup:
+		def data = [date1: Formi.format(new Date(), "yyyyMMddHHmm")];
+		System.out.println(data.date1);
+		
+		expect:
+		fixtureBook.validate(data)
+	}
+	
+	@Fixture("セル内容が\${TODAY}の場合は本日の日付のみOK")
+	def "セル内容がTODAYの場合は本日の日付のみOK_区切り文字なし日時分秒書式文字列"() {
+		setup:
+		def data = [date1: Formi.format(new Date(), "yyyyMMddHHmmss")];
+		System.out.println(data.date1);
+		
+		expect:
+		fixtureBook.validate(data)
 	}
 }

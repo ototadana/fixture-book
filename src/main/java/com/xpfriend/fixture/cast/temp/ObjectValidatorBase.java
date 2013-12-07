@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,6 +28,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.concurrent.Callable;
 
 import org.apache.commons.codec.binary.Base64;
@@ -38,8 +41,10 @@ import com.xpfriend.fixture.staff.Section;
 import com.xpfriend.fixture.staff.Table;
 import com.xpfriend.fixture.toolkit.PathUtil;
 import com.xpfriend.junk.ConfigException;
+import com.xpfriend.junk.ExceptionHandler;
 import com.xpfriend.junk.Formi;
 import com.xpfriend.junk.Strings;
+import com.xpfriend.junk.temp.Formatter;
 
 /**
  * @author Ototadana
@@ -48,6 +53,10 @@ import com.xpfriend.junk.Strings;
 public abstract class ObjectValidatorBase extends ObjectOperatorBase implements ObjectValidator {
 
 	private static final String TODAY = "${TODAY}";
+	private static Formatter dateFormatter = Formatter.getInstance();
+    private static final String[] DATEFORMATS = new String[]{
+    	"yyyy-MM-dd", "yyyy-MM-dd HH:mm", "yyyy-MM-dd HH:mm:ss",
+    	"yyyyMMdd", "yyyyMMddHHmm", "yyyyMMddHHmmss"};
 
 	private ObjectValidator parent;
 	
@@ -235,6 +244,10 @@ public abstract class ObjectValidatorBase extends ObjectOperatorBase implements 
 
 	protected boolean assertEqualsAsDate(Table table, Row row, String columnName,
 			String expected, Object actual) {
+		if(expected.indexOf(TODAY) > -1 && actual instanceof String) {
+			actual = toDate((String)actual);
+		}
+		
 		if(expected.indexOf(TODAY) > -1 && actual instanceof Date) {
 			String today = Formi.format(new Date(), "yyyy-MM-dd");
 			expected = expected.replace(TODAY, today);
@@ -260,6 +273,34 @@ public abstract class ObjectValidatorBase extends ObjectOperatorBase implements 
 					"M_Fixture_Temp_ObjectValidator_AssertEquals", table, row, columnName, expected, actualAsText, getClass(actual));
 		}
 		return false;
+	}
+
+	private Object toDate(String actual) {
+		Date date;
+		if((date = parse(DateFormat.getDateInstance(), actual)) != null) {
+			return date;
+		}
+		if((date = parse(DateFormat.getDateTimeInstance(), actual)) != null) {
+			return date;
+		}
+
+		TimeZone timeZone = TimeZone.getDefault();
+		for(int i = 0; i < DATEFORMATS.length; i++) {
+			DateFormat dateFormat = dateFormatter.getDateFormat(DATEFORMATS[i], timeZone);
+			if((date = parse(dateFormat, actual)) != null) {
+				return date;
+			}
+		}
+		return actual;
+	}
+	
+	private Date parse(DateFormat dateFormat, String actual) {
+		try {
+			return dateFormat.parse(actual);
+		} catch(ParseException e) {
+			ExceptionHandler.ignore(e);
+		}
+		return null;
 	}
 
 	private boolean assertEqualsAsSqlDate(String expected, Object actual) {
