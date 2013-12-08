@@ -17,8 +17,12 @@ package com.xpfriend.fixture;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import com.xpfriend.fixture.staff.Book;
@@ -39,6 +43,19 @@ import com.xpfriend.junk.Resi;
  * @author Ototadana
  */
 public class FixtureBook {
+	
+	/**
+	 * 検証前に例外を編集する処理。
+	 */
+	public interface ExceptionEditor {
+		
+		/**
+		 * 例外を編集する。
+		 * @param exception 編集対象となる例外。
+		 * @return 編集結果として作成されたオブジェクト。
+		 */
+		Object edit(Throwable exception);
+	}
 	
 	private static class FeatureNameFinder {
 		private Class<?> specInfoBuilderClass;
@@ -97,12 +114,55 @@ public class FixtureBook {
 	}
 	
 	private static final String NAME_SEPARATOR_KEY = "FixtureBook.nameSeparator";
+	private static final String EXCEPTION_EDITOR_KEY = "FixtureBook.exceptionEditor";
 	private static final String DEFAULT_NAME_SEPARATOR = "__";
 	private static String nameSeparator;
 	private static FeatureNameFinder featureNameFinder = new FeatureNameFinder();
+	private static Map<Class<?>, ExceptionEditor> defaultExceptionEditors = new HashMap<Class<?>, ExceptionEditor>();
 	static {
 		Resi.add(FixtureBook.class.getPackage().getName());
 		initNameSeparator();
+		initDefaultExceptionEditors();
+	}
+
+	private static void initDefaultExceptionEditors() {
+		String editorClass = Config.get(EXCEPTION_EDITOR_KEY, null);
+		if(editorClass == null) {
+			return;
+		}
+		Class<?> editors;
+		try {
+			editors = Class.forName(editorClass);
+		} catch(ClassNotFoundException e) {
+			throw new ConfigException(e);
+		}
+		if(editors == null) {
+			throw new ConfigException("invalid classname : " + editorClass);
+		}
+		Method[] methods = editors.getMethods();
+		for(final Method method : methods) {
+			Class<?>[] parameterTypes = method.getParameterTypes();
+			Class<?> returnType = method.getReturnType();
+			int mod = method.getModifiers();
+			if(Modifier.isPublic(mod) && Modifier.isStatic(mod) &&
+					!Void.class.equals(returnType) &&
+					parameterTypes.length == 1 &&
+					Exception.class.isAssignableFrom(parameterTypes[0])) {
+				ExceptionEditor exceptionEditor = new ExceptionEditor() {
+					@Override
+					public Object edit(Throwable exception) {
+						try {
+							return method.invoke(null, new Object[]{exception});
+						} catch (IllegalAccessException e) {
+							throw new ConfigException(e);
+						} catch (InvocationTargetException e) {
+							throw new ConfigException(e.getCause());
+						}
+					}
+				};
+				defaultExceptionEditors.put(parameterTypes[0], exceptionEditor);
+			}
+		}
 	}
 
 	private static void initNameSeparator() {
@@ -237,6 +297,9 @@ public class FixtureBook {
 		book = Book.getInstance(fixtureInfo.testClass, fixtureInfo.filePath);
 		sheet = book.getSheet(fixtureInfo.sheetName);
 		testCase = sheet.getCase(fixtureInfo.testCaseName);
+		for(Map.Entry<Class<?>, ExceptionEditor> entry : defaultExceptionEditors.entrySet()) {
+			testCase.registerExceptionEditor(entry.getKey(), entry.getValue());
+		}
 		Loggi.debug("FixtureBook : Case : " + testCase);
 	}
 
@@ -608,6 +671,34 @@ public class FixtureBook {
 	public FixtureBook validateParameterAt(int index, String name) {
 		initializeIfNotYet();
 		testCase.validateParameterAt(index, name);
+		return this;
+	}
+	
+	/**
+	 * 検証対象の例外情報を編集するための処理をデフォルト登録する。
+	 * @param exceptionType 編集対象の例外。
+	 * @param exceptionEditor 編集処理。
+	 */
+	public static void registerDefaultExceptionEditor(Class<?> exceptionType, ExceptionEditor exceptionEditor) {
+		defaultExceptionEditors.put(exceptionType, exceptionEditor);
+	}
+	
+	/**
+	 * 例外処理のデフォルト登録を解除する。
+	 * @param exceptionType 編集対象の例外。
+	 */
+	public static void unregisterDefaultExceptionEditor(Class<?> exceptionType) {
+		defaultExceptionEditors.remove(exceptionType);
+	}
+
+	/**
+	 * 検証対象の例外情報を編集するための処理を登録する。
+	 * @param exceptionType 編集対象の例外。
+	 * @param exceptionEditor 編集処理。
+	 */
+	public FixtureBook registerExceptionEditor(Class<?> exceptionType, ExceptionEditor exceptionEditor) {
+		initializeIfNotYet();
+		testCase.registerExceptionEditor(exceptionType, exceptionEditor);
 		return this;
 	}
 }

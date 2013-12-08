@@ -17,9 +17,11 @@ package com.xpfriend.fixture.cast.temp;
 
 import java.util.concurrent.Callable;
 
+import com.xpfriend.fixture.FixtureBook;
 import com.xpfriend.fixture.role.ObjectValidator;
 import com.xpfriend.fixture.staff.Case;
 import com.xpfriend.fixture.staff.Section.SectionType;
+import com.xpfriend.junk.Loggi;
 
 /**
  * @author Ototadana
@@ -30,12 +32,14 @@ public class TempObjectValidator implements ObjectValidator {
 	private MapValidator mapValidator = new MapValidator(this);
 	private PojoValidator pojoValidator = new PojoValidator(this);
 	private DynaBeanValidator dynaBeanValidator = new DynaBeanValidator(this);
-	
+	private Case testCase;
+
 	@Override
 	public void initialize(Case testCase) {
 		mapValidator.initialize(testCase);
 		pojoValidator.initialize(testCase);
 		dynaBeanValidator.initialize(testCase);
+		this.testCase = testCase;
 	}
 
 	@Override
@@ -59,7 +63,37 @@ public class TempObjectValidator implements ObjectValidator {
 	@Override
 	public void validate(Class<? extends Throwable> exceptionClass,
 			Callable<?> action, String typeName) {
-		pojoValidator.validate(exceptionClass, action, typeName);
+		boolean isNormalEnd = false;
+		try {
+			action.call();
+			isNormalEnd = true;
+		} catch(Throwable t) {
+			Loggi.debug(t);
+			if(GroovySupport.isInvokerInvocationException(t)) {
+				t = t.getCause();
+			}
+			Object obj = t;
+			FixtureBook.ExceptionEditor editor = getExceptionEditor(t.getClass());
+			if(editor != null) {
+				obj = editor.edit(t);
+			}
+			validate(obj, typeName);
+		}
+		
+		if(isNormalEnd) {
+			Assertie.fail("M_Fixture_Temp_ObjectValidator_Exception", exceptionClass.getName());
+		}
+	}
+
+	private FixtureBook.ExceptionEditor getExceptionEditor(Class<?> type) {
+		FixtureBook.ExceptionEditor editor = testCase.getExceptionEditor(type);
+		if(editor != null) {
+			return editor;
+		}
+		if(Throwable.class.isAssignableFrom(type.getSuperclass())) {
+			return getExceptionEditor(type.getSuperclass());
+		}
+		return null;
 	}
 	
 	public void setSectionType(SectionType sectionType) {

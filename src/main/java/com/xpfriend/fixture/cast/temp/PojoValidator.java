@@ -16,12 +16,10 @@
 package com.xpfriend.fixture.cast.temp;
 
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import com.xpfriend.fixture.role.ObjectValidator;
 import com.xpfriend.fixture.staff.Row;
 import com.xpfriend.fixture.staff.Table;
-import com.xpfriend.junk.Loggi;
 
 /**
  * Java Beans 用の {@link ObjectValidator}。
@@ -36,26 +34,6 @@ public class PojoValidator extends ObjectValidatorBase {
 	@Override
 	public boolean hasRole(Object object, String typeName) {
 		return getSection() != null && getSection().hasTable();
-	}
-
-	@Override
-	public void validate(Class<? extends Throwable> exceptionClass,
-			Callable<?> action, String typeName) {
-		boolean isNormalEnd = false;
-		try {
-			action.call();
-			isNormalEnd = true;
-		} catch(Throwable t) {
-			Loggi.debug(t);
-			if(GroovySupport.isInvokerInvocationException(t)) {
-				t = t.getCause();
-			}
-			validate(t, typeName);
-		}
-		
-		if(isNormalEnd) {
-			Assertie.fail("M_Fixture_Temp_ObjectValidator_Exception", exceptionClass.getName());
-		}
 	}
 
 	@Override

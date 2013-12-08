@@ -235,10 +235,7 @@ public class TempConductor implements Conductor {
 	}
 
 	private void validate(Result result) {
-		Section section = testCase.getSection(SectionType.EXPECTED_RESULT);
-		if(section != null && section.hasTable(result.name)) {
-			testCase.validate(result.value, result.name);
-		}
+		testCase.validate(result.value, result.name);
 	}
 
 	private Result toResult(Object result) {
@@ -250,6 +247,7 @@ public class TempConductor implements Conductor {
 	public void expectThrown(Class<? extends Throwable> exceptionClass,
 			final Object action, final Class<?>... cls) {
 		testCase.setup();
+		String tableName = getTableName(0, SectionType.EXPECTED_RESULT);
 		testCase.validate(exceptionClass, 
 				new Callable<Object>() {
 					@Override
@@ -261,7 +259,7 @@ public class TempConductor implements Conductor {
 						}
 						return null;
 					}
-				}, null);
+				}, tableName);
 		testCase.validateStorageInternal();
 	}
 
@@ -374,6 +372,7 @@ public class TempConductor implements Conductor {
 	public void expectThrown(Class<? extends Throwable> exceptionClass,
 			final Class<?> targetClass, final String targetMethod, final Class<?>[] parameterClass) {
 		testCase.setup();
+		String tableName = getTableName(0, SectionType.EXPECTED_RESULT);
 		testCase.validate(exceptionClass, 
 				new Callable<Object>() {
 					@Override
@@ -385,7 +384,7 @@ public class TempConductor implements Conductor {
 						}
 						return null;
 					}
-				}, null);
+				}, tableName);
 		testCase.validateStorageInternal();
 	}
 }

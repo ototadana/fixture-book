@@ -15,10 +15,13 @@
  */
 package com.xpfriend.fixture
 
+import java.text.ParseException;
+
 import spock.lang.Specification
 
 import com.xpfriend.fixture.FixtureBookTest.FixtureBookTestData;
 import com.xpfriend.fixture.cast.temp.Database
+import com.xpfriend.junk.Config;
 import com.xpfriend.junk.ConfigException
 import com.xpfriend.junk.Loggi
 
@@ -40,6 +43,10 @@ class FixtureBookTest extends Specification {
 	def cleanup() {
 		Loggi.debugEnabled = false
 		assert calledSetup == true
+		Config.put(FixtureBook.EXCEPTION_EDITOR_KEY, null);
+		FixtureBook.initDefaultExceptionEditors();
+		FixtureBook.unregisterDefaultExceptionEditor(IllegalArgumentException);
+		FixtureBook.unregisterDefaultExceptionEditor(ParseException);
 	}
 	
 	def cleanupSpec() {
@@ -357,5 +364,77 @@ class FixtureBookTest extends Specification {
 		ConfigException e = thrown()
 		println e.getLocalizedMessage()
 		e.getLocalizedMessage().indexOf("xxx") > -1
+	}
+	
+	@Fixture(["validateで例外発生がテストできる"])
+	def "registerExceptionEditorで登録したエディタで例外を編集できる"() {
+		setup:
+		FixtureBook fixtureBook = new FixtureBook()
+
+		when:
+		fixtureBook.registerExceptionEditor(IllegalArgumentException, {
+			System.out.println(it)
+			assert it.message == "sys"
+			return [ message : "zzz"]
+		} as FixtureBook.ExceptionEditor);
+		fixtureBook.registerExceptionEditor(ParseException, {
+			System.out.println(it)
+			assert it.message == "app"
+			return [ message : "zzz"]
+		} as FixtureBook.ExceptionEditor);
+	
+		then:
+		fixtureBook.validate(IllegalArgumentException, {throw new IllegalArgumentException("sys")}, "Exception");
+		fixtureBook.validate(ParseException, {throw new ParseException("app", 0)}, "Exception");
+	}
+	
+	@Fixture(["validateで例外発生がテストできる"])
+	def "registerDefaultExceptionEditorで登録したエディタで例外を編集できる"() {
+		when:
+		FixtureBook.registerDefaultExceptionEditor(IllegalArgumentException, {
+			System.out.println(it)
+			assert it.message == "sys"
+			return [ message : "zzz"]
+		} as FixtureBook.ExceptionEditor);
+		
+		then:
+		FixtureBook.expectThrown(IllegalArgumentException, {throw new IllegalArgumentException("sys")})
+		FixtureBook.expectThrown(IllegalArgumentException, ExceptionThrower, "throwException")
+	}
+
+	@Fixture(["validateで例外発生がテストできる"])
+	def "registerDefaultExceptionEditorは設定ファイルからも登録できる"() {
+		when:
+		Config.put(FixtureBook.EXCEPTION_EDITOR_KEY, "com.xpfriend.fixture.ExceptionEditors")
+		FixtureBook.initDefaultExceptionEditors()
+		
+		then:
+		FixtureBook.expectThrown(IllegalArgumentException, {throw new IllegalArgumentException("sys")})
+		FixtureBook.expectThrown(ParseException, {throw new ParseException("app", 0)});
+	}
+
+	@Fixture(["validateで例外発生がテストできる"])
+	def "registerDefaultExceptionEditorで登録したエディタはregisterExceptionEditorで上書きできる"() {
+		when:
+		FixtureBook.registerDefaultExceptionEditor(ParseException, {
+			System.out.println(it)
+			assert it.message == "app"
+			return [ message : "ZZZ"]
+		} as FixtureBook.ExceptionEditor);
+		FixtureBook fixtureBook = new FixtureBook()
+		fixtureBook.registerExceptionEditor(ParseException, {
+			System.out.println(it)
+			assert it.message == "app"
+			return [ message : "zzz"]
+		} as FixtureBook.ExceptionEditor);
+
+		then:
+		fixtureBook.validate(ParseException, {throw new ParseException("app", 0)}, "Exception");
+	}
+
+	static class ExceptionThrower {
+		public void throwException() {
+			throw new IllegalArgumentException("sys")
+		}
 	}
 }

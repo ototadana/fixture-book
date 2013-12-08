@@ -16,8 +16,11 @@
 package com.xpfriend.fixture.staff;
 
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
+import com.xpfriend.fixture.FixtureBook.ExceptionEditor;
 import com.xpfriend.fixture.cast.DressingRoom;
 import com.xpfriend.fixture.role.ObjectFactory;
 import com.xpfriend.fixture.role.ObjectValidator;
@@ -41,6 +44,7 @@ public class Case {
 	private DressingRoom dressingRoom;
 	private Section[] sections = new Section[Section.getMaxNumber() + 1];
 	private boolean notYet = true;
+	private Map<Class<?>, ExceptionEditor> exceptionEditors = new HashMap<Class<?>, ExceptionEditor>();
 	
 	/**
 	 * テストケース定義を作成する。
@@ -244,5 +248,13 @@ public class Case {
 	public void expectThrown(Class<? extends Throwable> exceptionClass,
 			Class<?> targetClass, String targetMethod, Class<?>[] parameterClass) {
 		dressingRoom.getConductor().expectThrown(exceptionClass, targetClass, targetMethod, parameterClass);
+	}
+
+	public void registerExceptionEditor(Class<?> exceptionType, ExceptionEditor exceptionEditor) {
+		exceptionEditors.put(exceptionType, exceptionEditor);
+	}
+
+	public ExceptionEditor getExceptionEditor(Class<?> type) {
+		return exceptionEditors.get(type);
 	}
 }
