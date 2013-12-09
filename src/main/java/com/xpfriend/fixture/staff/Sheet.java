@@ -89,7 +89,7 @@ public class Sheet {
 		if(testCase == null) {
 			throw new ConfigException("M_Fixture_Sheet_GetCase", caseName, this);
 		}
-		return testCase;
+		return testCase.copy();
 	}
 	
 	private void write(Sheet sheet) {

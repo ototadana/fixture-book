@@ -58,6 +58,13 @@ public class Case {
 		this.dressingRoom = director.assignActors(this);
 	}
 	
+	private Case(Case testCase) {
+		this.sheet = testCase.sheet;
+		this.caseName = testCase.caseName;
+		this.dressingRoom = testCase.dressingRoom;
+		this.sections = testCase.sections;
+	}
+	
 	/**
 	 * このテストケースの名前を取得する。
 	 * @return テストケース名。
@@ -256,5 +263,13 @@ public class Case {
 
 	public ExceptionEditor getExceptionEditor(Class<?> type) {
 		return exceptionEditors.get(type);
+	}
+	
+	Case copy() {
+		if(notYet && exceptionEditors.isEmpty()) {
+			return this;
+		} else {
+			return new Case(this);
+		}
 	}
 }

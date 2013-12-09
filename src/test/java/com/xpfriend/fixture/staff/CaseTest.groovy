@@ -15,11 +15,14 @@
  */
 package com.xpfriend.fixture.staff
 
+import com.xpfriend.fixture.Fixture;
 import com.xpfriend.fixture.FixtureBook;
+import com.xpfriend.fixture.cast.temp.data.Data;
 import com.xpfriend.fixture.staff.Book;
 import com.xpfriend.fixture.staff.Case;
 import com.xpfriend.fixture.staff.Sheet;
 import com.xpfriend.junk.ConfigException;
+import com.xpfriend.junk.Loggi;
 
 import spock.lang.Specification
 
@@ -166,5 +169,58 @@ class CaseTest extends Specification {
 		println e
 		e.getMessage() == "M_Fixture_Case_Validate_Object"
 		e.getLocalizedMessage().indexOf("テストケース001") > -1
+	}
+	
+	def "getObjectの呼び出しにより暗黙的にsetupメソッドが呼び出される"() {
+		setup:
+		FixtureBook fixtureBook = new FixtureBook()
+		
+		when:
+		Data data = fixtureBook.getObject(Data)
+		
+		then:
+		data.text1 == "a"
+		fixtureBook.validateStorage()
+	}
+	
+	@Fixture(["getObjectの呼び出しにより暗黙的にsetupメソッドが呼び出される"])
+	def "FixtureBookインスタンスが同一の場合は暗黙的setupメソッド呼び出しは1回しか行われない"() {
+		setup:
+		Loggi.debugEnabled = true
+		FixtureBook fixtureBook = new FixtureBook()
+		fixtureBook.getObject(Data)
+		getObjectの呼び出しにより暗黙的にsetupメソッドが呼び出される_setup()
+		
+		when:
+		Data data = fixtureBook.getObject(Data)
+		fixtureBook.validateStorage()
+
+		then:
+		AssertionError e = thrown()
+		println e
+	}
+	
+	@Fixture(["getObjectの呼び出しにより暗黙的にsetupメソッドが呼び出される"])
+	def "FixtureBookインスタンス毎に暗黙的setupメソッド呼び出しは行われる"() {
+		setup:
+		Loggi.debugEnabled = true
+		new FixtureBook().getObject(Data)
+		getObjectの呼び出しにより暗黙的にsetupメソッドが呼び出される_setup()
+		
+		when:
+		FixtureBook fixtureBook = new FixtureBook()
+		Data data = fixtureBook.getObject(Data)
+		fixtureBook.validateStorage()
+
+		then:
+		data.text1 == "a"
+		fixtureBook.validateStorage()
+	}
+	
+	@Fixture(["getObjectの呼び出しにより暗黙的にsetupメソッドが呼び出される_setup"])
+	def "getObjectの呼び出しにより暗黙的にsetupメソッドが呼び出される_setup"() {
+		println "1"
+		new FixtureBook().setup();
+		println "2"
 	}
 }
