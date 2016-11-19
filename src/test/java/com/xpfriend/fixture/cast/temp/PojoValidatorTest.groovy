@@ -37,6 +37,18 @@ import spock.lang.Specification
  */
 class PojoValidatorTest extends Specification {
 
+	class TestObject {
+		String name;
+		TestObject(name) {
+			this.name = name;
+		}
+		String toString() {
+			return name;
+		}
+	}
+
+	enum TestEnum {ONE, TWO}
+
 	private FixtureBook fixtureBook = new FixtureBook();
 
 	def "hasRoleはinitializeで指定されたテストケースに取得データセクションがなければfalseを返す"() {
@@ -224,4 +236,69 @@ class PojoValidatorTest extends Specification {
 		AssertionError e = thrown()
 		println e
 	}
+
+	@Fixture(["オブジェクトの文字列表現を検証できる"])
+	def オブジェクトの文字列表現を検証できる_正常() {
+		expect:
+		FixtureBook.expectReturn({new TestObject("Object1")})
+	}
+
+	@Fixture(["オブジェクトの文字列表現を検証できる"])
+	def オブジェクトの文字列表現を検証できる_エラー() {
+		when:
+		FixtureBook.expectReturn({new TestObject("Object2")})
+
+		then:
+		AssertionError e = thrown()
+		println e
+	}
+
+	@Fixture(["enumの文字列表現を検証できる"])
+	def enumの文字列表現を検証できる_正常() {
+		expect:
+		FixtureBook.expectReturn({TestEnum.ONE})
+	}
+
+	@Fixture(["enumの文字列表現を検証できる"])
+	def enumの文字列表現を検証できる_エラー() {
+		when:
+		FixtureBook.expectReturn({TestEnum.TWO})
+
+		then:
+		AssertionError e = thrown()
+		println e
+	}
+
+	@Fixture(["オブジェクトの配列を検証できる"])
+	def オブジェクトの配列を検証できる_正常() {
+		expect:
+		FixtureBook.expectReturn({[new TestObject("Object1"), new TestObject("Object2")]})
+	}
+
+	@Fixture(["オブジェクトの配列を検証できる"])
+	def オブジェクトの配列を検証できる_エラー() {
+		when:
+		FixtureBook.expectReturn({[new TestObject("Object1"), new TestObject("Object1")]})
+
+		then:
+		AssertionError e = thrown()
+		println e
+	}
+
+	@Fixture(["enumの配列を検証できる"])
+	def enumの配列を検証できる_正常() {
+		expect:
+		FixtureBook.expectReturn({TestEnum.values()})
+	}
+
+	@Fixture(["enumの配列を検証できる"])
+	def enumの配列を検証できる_エラー() {
+		when:
+		FixtureBook.expectReturn({[TestEnum.ONE, TestEnum.ONE]})
+
+		then:
+		AssertionError e = thrown()
+		println e
+	}
+
 }

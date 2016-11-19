@@ -51,7 +51,6 @@ public class PojoValidator extends ObjectValidatorBase {
 
 	private boolean isSimpleType(Object value, Row row) {
 		Map<String, String> values = row.getValues();
-		return values.size() == 1 && values.containsKey(OWN) &&
-				(value == null || TypeConverter.isConvertible(value.getClass()));
+		return values.size() == 1 && values.containsKey(OWN);
 	}
 }
