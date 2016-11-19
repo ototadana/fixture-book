@@ -22,7 +22,6 @@
     [smalldatetime1]    SMALLDATETIME      NULL,
     [smallint1]         SMALLINT           NULL,
     [smallmoney1]       SMALLMONEY         NULL,
-    [sql_variant1]      SQL_VARIANT        NULL,
     [text1]             TEXT               NULL,
     [time1]             TIME (7)           NULL,
     [tinyint1]          TINYINT            NULL,
